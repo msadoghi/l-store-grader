@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>L-Store Grader</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='images/layers.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+<body>
+<div class="custom-loader" id="loader"> 
+    <div class='loader loader1'>
+        <div>
+            <div>
+            <div>
+                <div>
+                <div>
+                    <div></div>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- partial:index.partial.html -->
+<div id="large-header" class="large-header">
+    <canvas id="demo-canvas"></canvas>
+<div class="modal" style="max-width: 700px;">
+	<div class="modal-header">
+		<div class="modal-logo">
+            <a href="{{ url_for('upload_file') }}">
+                <span class="logo-circle">
+                    <img src="{{ url_for('static', filename='images/layers.png') }}" style="height: 2rem; width: 2rem;">
+                </span>
+            </a>
+		</div>
+	</div>
+
+    <div id="dashboard">
+        <div class="modal-body">
+            <h2 class="modal-title">L-Store Grader Leaderboard</h2>
+            <br />
+            <!-- Milestone Selection Dropdown -->
+            <div class="results-dropdown">
+                <select id="milestone-select" class="milestone" style="width: 50%;">
+                    <option value="milestone1">Milestone 1</option>
+                    <option value="milestone1_extended">Milestone 1 Extended</option>
+                    <option value="milestone2">Milestone 2</option>
+                    <option value="milestone2_extended">Milestone 2 Extended</option>
+                    <option value="milestone3">Milestone 3</option>
+                </select>
+            </div>
+
+            <!-- Leaderboard Table Placeholder -->
+            <div class="leaderboard-table">
+                <table id="leaderboard">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Submission Name</th>
+                            <th>Total Test Cases Passed</th>
+                            <th>Total Time Taken</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Results will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </form>
+    </div>
+    </div>
+</div>
+<!-- partial -->
+    
+<script src='https://www.marcoguglie.it/Codepen/AnimatedHeaderBg/demo-1/js/EasePack.min.js'></script>
+<script src='https://www.marcoguglie.it/Codepen/AnimatedHeaderBg/demo-1/js/rAF.js'></script>
+<script src='https://www.marcoguglie.it/Codepen/AnimatedHeaderBg/demo-1/js/TweenLite.min.js'></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+<script>
+    $(document).ready(function() {
+        $("#loader").fadeOut(700);
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+    function fetchAndUpdateLeaderboard(milestone) {
+        $.ajax({
+            url: '/results/' + milestone, // Adjust the URL based on your routing
+            type: 'GET',
+            success: function(data) {
+                updateLeaderboardTable(data);
+            },
+            error: function(error) {
+                console.error('Error fetching leaderboard data:', error);
+            }
+        });
+    }
+
+    function updateLeaderboardTable(data) {
+        const $leaderboardBody = $('#leaderboard tbody');
+        $leaderboardBody.empty(); // Clear existing entries
+
+        data.forEach((entry, index) => {
+            const row = `<tr>
+                            <td>${index + 1}</td>
+                            <td>${entry.name}</td>
+                            <td>${entry.count}/${entry.total}</td>
+                            <td>${entry.total_time} s</td>
+                         </tr>`;
+            $leaderboardBody.append(row);
+        });
+    }
+
+    $('#milestone-select').on('change', function() {
+        const selectedMilestone = $(this).val();
+        fetchAndUpdateLeaderboard(selectedMilestone);
+    });
+
+    // Initial fetch for the default selected milestone
+    const initialMilestone = $('#milestone-select').val();
+    fetchAndUpdateLeaderboard(initialMilestone);
+});
+
+</script>
+  
+</body>
+</html>

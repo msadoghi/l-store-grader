@@ -1,1 +1,1 @@
-# l-store-grader
+# lstore-grader

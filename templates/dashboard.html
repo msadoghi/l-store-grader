@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>L-Store Grader</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='images/layers.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+<body>
+<div class="custom-loader" id="loader"> 
+    <div class='loader loader1'>
+        <div>
+            <div>
+            <div>
+                <div>
+                <div>
+                    <div></div>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- partial:index.partial.html -->
+<div id="large-header" class="large-header">
+    <canvas id="demo-canvas"></canvas>
+<div class="modal">
+    <a href="{{ url_for('leaderboard') }}" class="ribbon" id="ribbon">Leaderboard</a>
+	<div class="modal-header">
+		<div class="modal-logo">
+            <a href="{{ url_for('upload_file') }}">
+                <span class="logo-circle">
+                    <img src="{{ url_for('static', filename='images/layers.png') }}" style="height: 2rem; width: 2rem;">
+                </span>
+            </a>
+		</div>
+	</div>
+
+    <div id="results">
+        <div class="modal-body">
+            <h2 class="modal-title">L-Store Grader</h2>
+            <br />
+                <p class="submission">
+                    Submission Name: <span id="unique-file" class="submission-name"></span>
+                </p>
+                <br />
+                <div class="result-box">
+                    <p class="modal-description result" id="test-results"></p>
+                </div>
+                <br />
+                <div class="container">
+                    <div class="scrollable-list-container">
+                    <div class="scroll-arrow up-arrow" id="upArrow" onmouseenter="scrollUp()" onmouseleave="stopScroll()"><i class="fa fa-sort-asc" aria-hidden="true"></i></div>
+                    <div class="scrollable-list" id="scrollableList">
+                    </div>
+                    <div class="scroll-arrow down-arrow" id="downArrow" onmouseenter="scrollDown()" onmouseleave="stopScroll()"><i class="fa fa-sort-desc" aria-hidden="true"></i></div>
+                    </div>
+                    <div class="focus-element">Click on a test on the left</div>
+                </div>
+            </div>
+            <div class="performance-box">
+                <ul id="performance">
+                </ul>
+            </div>
+        <br />
+    </div>
+
+    <div id="dashboard">
+        <div class="modal-body">
+            <h2 class="modal-title">L-Store Grader</h2>
+            <p class="modal-description">Attach your code as .zip below</p>
+            <div id="progressBarContainer" style="display: none;">
+                <div id="progressBar"></div>
+            </div>
+            <form id="drop_zone" action="/" method="post" enctype="multipart/form-data">
+            <div class="upload-box">
+            <div class="upload-area">
+                <span class="upload-area-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="340.531" height="419.116" viewBox="0 0 340.531 419.116">
+                <g id="files-new" clip-path="url(#clip-files-new)">
+                    <path id="Union_2" data-name="Union 2" d="M-2904.708-8.885A39.292,39.292,0,0,1-2944-48.177V-388.708A39.292,39.292,0,0,1-2904.708-428h209.558a13.1,13.1,0,0,1,9.3,3.8l78.584,78.584a13.1,13.1,0,0,1,3.8,9.3V-48.177a39.292,39.292,0,0,1-39.292,39.292Zm-13.1-379.823V-48.177a13.1,13.1,0,0,0,13.1,13.1h261.947a13.1,13.1,0,0,0,13.1-13.1V-323.221h-52.39a26.2,26.2,0,0,1-26.194-26.195v-52.39h-196.46A13.1,13.1,0,0,0-2917.805-388.708Zm146.5,241.621a14.269,14.269,0,0,1-7.883-12.758v-19.113h-68.841c-7.869,0-7.87-47.619,0-47.619h68.842v-18.8a14.271,14.271,0,0,1,7.882-12.758,14.239,14.239,0,0,1,14.925,1.354l57.019,42.764c.242.185.328.485.555.671a13.9,13.9,0,0,1,2.751,3.292,14.57,14.57,0,0,1,.984,1.454,14.114,14.114,0,0,1,1.411,5.987,14.006,14.006,0,0,1-1.411,5.973,14.653,14.653,0,0,1-.984,1.468,13.9,13.9,0,0,1-2.751,3.293c-.228.2-.313.485-.555.671l-57.019,42.764a14.26,14.26,0,0,1-8.558,2.847A14.326,14.326,0,0,1-2771.3-147.087Z" transform="translate(2944 428)" fill="var(--c-action-primary-accent)"/>
+                </g>
+                </svg>
+                </span>
+        
+                <span class="upload-area-title">Drag your code as .zip(s) here to upload.<input type="file" name="file" accept=".zip" id="fileInput" style="display: none;"></span>
+                <span class="upload-area-description">
+                    Alternatively, you can select the .zip by <br/><strong>clicking here</strong>
+                </span>
+            </div>
+        </div>
+        </div>
+        <div class="modal-footer">
+            <div class="checkbox-container">
+                <input type="checkbox" id="extended" name="extended" value="extended">
+                <label for="extended">Extended</label>
+            </div>
+            <div class="dropdown">
+                <select name="milestone" class="milestone">
+                    <option value="milestone1">Milestone 1</option>
+                    <option value="milestone2">Milestone 2</option>
+                    <option value="milestone3">Milestone 3</option>
+                </select>
+            </div>
+            <button class="btn-primary" type="submit">Evaluate</button>
+        </div>
+    </form>
+    </div>
+    </div>
+</div>
+<!-- partial -->
+    
+<script src='https://www.marcoguglie.it/Codepen/AnimatedHeaderBg/demo-1/js/EasePack.min.js'></script>
+<script src='https://www.marcoguglie.it/Codepen/AnimatedHeaderBg/demo-1/js/rAF.js'></script>
+<script src='https://www.marcoguglie.it/Codepen/AnimatedHeaderBg/demo-1/js/TweenLite.min.js'></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+<script>
+    $(document).ready(function() {
+        $("#loader").fadeOut(700);
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $("#results").hide();
+    });
+</script>  
+
+<script>
+    var dropZone = document.getElementById('drop_zone');
+    
+    // Add event listeners for drag and drop
+    dropZone.addEventListener('dragover', function(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'copy'; // Visual feedback
+        dropZone.classList.add('over');
+    });
+    
+    dropZone.addEventListener('dragleave', function(event) {
+        dropZone.classList.remove('over');
+    });
+    
+    function updateUploadStatus(fileName) {
+        var descriptionSpan = document.querySelector('.upload-area-description');
+        
+        // Update the UI to show the uploaded file name
+        descriptionSpan.innerHTML = 'File uploaded: ' + fileName; // Remove the description text
+    }
+    
+    dropZone.addEventListener('drop', function(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        dropZone.classList.remove('over');
+        
+        var files = event.dataTransfer.files; // Array of all files
+    
+        // Update the upload status
+        if (files.length > 0) {
+            updateUploadStatus(files[0].name); // Assuming only one file is handled
+        }
+    });
+    
+    // Optional: Click to upload as well
+    dropZone.addEventListener('click', function() {
+        document.getElementById('fileInput').click();
+    });
+    
+    document.getElementById('fileInput').addEventListener('change', function(event) {
+        var files = event.target.files; // Array of all files
+        // Update the upload status
+        if (files.length > 0) {
+            updateUploadStatus(files[0].name); // Assuming only one file is handled
+        }
+    });
+    
+    function simulateUploadProgress() {
+        var elem = document.getElementById("progressBar"); 
+        var width = 0;
+        var processingTime = 500; // Estimated processing time in milliseconds (e.g., 10 seconds)
+        var id = setInterval(frame, processingTime / 100);
+    
+        function frame() {
+            if (width >= 100) {
+                clearInterval(id);
+                $("#large-header").fadeOut(500, function() {
+                    $("#dashboard").hide();
+                    $("#ribbon").hide();
+                    // This function is called after the dashboard has finished fading out
+                    $("#loader").fadeIn(500);
+                });
+            } else {
+                width++; 
+                elem.style.width = width + '%'; 
+                elem.innerHTML = width + '%';
+            }
+        }
+    }
+    
+    document.getElementById('drop_zone').onsubmit = function() {
+        var fileInput = document.getElementById('fileInput');
+        var file = fileInput.files[0]; // Get the first file in the input
+
+        if (!file) {
+            return; // Stop the function here
+        }
+        document.getElementById('progressBarContainer').style.display = 'block';
+        simulateUploadProgress();
+    };
+</script>
+    
+
+<script>
+    var scrollableList = document.getElementById('scrollableList');
+    var upArrow = document.getElementById('upArrow');
+    var downArrow = document.getElementById('downArrow');
+    var isScrolling;
+
+    document.addEventListener('DOMContentLoaded', function() {
+    // Set the first item as selected
+    var firstItem = scrollableList.querySelector('.item');
+    if (firstItem) {
+        firstItem.classList.add('selected');
+        focusItem(firstItem);
+    }
+    showArrows();
+    });
+
+    function focusItem(element) {
+    // Remove selected class from any previously selected item
+    var previouslySelected = scrollableList.querySelector('.item.selected');
+    if (previouslySelected) {
+        previouslySelected.classList.remove('selected');
+    }
+    
+    // Add selected class to the clicked item
+    element.classList.add('selected');
+
+    var index = element.getAttribute('data-index');
+    var value = element.getAttribute('data-value');
+    
+    // Update the focus element text
+    var focusElement = document.querySelector('.focus-element');
+    focusElement.textContent = value;
+    }
+    
+    function showArrows() {
+      if (scrollableList.scrollTop > 0) {
+        upArrow.style.visibility = 'visible';
+      } else {
+        upArrow.style.visibility = 'hidden';
+      }
+      if (scrollableList.scrollTop < scrollableList.scrollHeight - scrollableList.clientHeight) {
+        downArrow.style.visibility = 'visible';
+      } else {
+        downArrow.style.visibility = 'hidden';
+      }
+    }
+    
+    function scrollDown() {
+      isScrolling = setInterval(function() {
+        scrollableList.scrollTop += 1;
+        showArrows();
+      }, 10);
+    }
+    
+    function scrollUp() {
+      isScrolling = setInterval(function() {
+        scrollableList.scrollTop -= 1;
+        showArrows();
+      }, 10);
+    }
+    
+    function stopScroll() {
+      clearInterval(isScrolling);
+    }
+    
+    // Initial check to determine arrow visibility
+    showArrows();
+    scrollableList.addEventListener('click', showArrows);
+</script>
+
+
+<script>
+function updateResultsPage(data) {
+    const resultsDescription = document.getElementById("test-results");
+    const testsContainer = document.getElementById("scrollableList");
+    const performanceContainer = document.getElementById("performance");
+    const fileName = document.getElementById("unique-file");
+
+    // Determine which message and icon to display based on the test cases
+    if (data.count === data.total) {
+        resultsDescription.innerHTML = `<i class="fa fa-check-circle" aria-hidden="true" style="color: rgb(41, 141, 41);"></i> ${data.count}/${data.total} Tests passed`;
+    } else if (data.count < data.total && data.count > 0) {
+        resultsDescription.innerHTML = `<i class="fa fa-star-half-o" aria-hidden="true" style="color: orange;"></i> ${data.count}/${data.total} Tests passed`;
+    } else {
+        resultsDescription.innerHTML = `<i class="fa fa-exclamation-triangle" aria-hidden="true" style="color: rgb(205, 59, 59);"></i> ${data.count}/${data.total} Tests passed`;
+    }
+
+    fileName.textContent = `${data.name}`;
+
+    // Populate tests list
+    Object.entries(data.tests).forEach(([test, outcome], index) => {
+        let div = document.createElement('div');
+        div.className = 'item';
+        div.textContent = `${test}`;
+        div.setAttribute('data-index', index);
+        div.setAttribute('data-value', `${outcome}`);
+        div.onclick = function() { focusItem(this); };
+        testsContainer.appendChild(div);
+    });
+
+    // Populate tests list
+    Object.entries(data.results).forEach(([metric, value], index) => {
+        let li;
+        switch (metric) {
+            case "agg_time":
+                li = document.createElement('li');
+                li.textContent = `Aggregate 10k records took: ${value} s`;
+                break;
+            case "delete_time":
+                li = document.createElement('li');
+                li.textContent = `Deleting 10k records took: ${value} s`;
+                break;
+            case "insert_time":
+                li = document.createElement('li');
+                li.textContent = `Inserting 10k records took: ${value} s`;
+                break;
+            case "select_time":
+                li = document.createElement('li');
+                li.textContent = `Selecting 10k records took: ${value} s`;
+                break;
+            case "update_time":
+                li = document.createElement('li');
+                li.textContent = `Updating 10k records took: ${value} s`;
+                break;
+        }
+        performanceContainer.appendChild(li);
+    });
+}
+
+document.getElementById('drop_zone').addEventListener('submit', function(e) {
+    e.preventDefault(); // Prevent the default form submission
+
+    var formData = new FormData(this);
+    var fileInput = document.getElementById('fileInput');
+    var file = fileInput.files[0]; // Get the first file in the input
+
+    if (!file) {
+        // If no file is selected, alert the user and stop the form submission
+        alert('Please select a file to upload.');
+        return; // Stop the function here
+    }
+
+    fetch('/', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            console.log(data);
+            updateResultsPage(data);
+            $("#loader").fadeOut(500, function() {
+                $("#large-header").show();
+                $("#results").show();
+            });
+        } else {
+            console.log('Error or no data returned');
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+});
+
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    var milestoneSelect = document.querySelector('.milestone'); // Get the milestone select element
+    var extendedCheckbox = document.getElementById('extended'); // Get the extended checkbox
+
+    // Function to enable or disable the checkbox based on the selected milestone
+    function toggleExtendedCheckbox() {
+        if (milestoneSelect.value === 'milestone3') {
+            extendedCheckbox.disabled = true;
+            extendedCheckbox.checked = false; // Optionally uncheck it
+        } else {
+            extendedCheckbox.disabled = false;
+        }
+    }
+
+    // Event listener for change on the milestone select element
+    milestoneSelect.addEventListener('change', toggleExtendedCheckbox);
+
+    // Call the function on initial load in case Milestone 3 is selected by default
+    toggleExtendedCheckbox();
+    });
+</script>
+  
+</body>
+</html>
